@@ -129,8 +129,10 @@ class KeyProvisionerHandler(BaseHTTPRequestHandler):
 
 
 def main():
-    host = "0.0.0.0"
-    port = 8000
+    import os
+
+    host = os.getenv("HOST") or "0.0.0.0"
+    port = int(os.getenv("PORT") or 8000)
 
     if not PROVISIONING_KEY:
         print("ERROR: OPENROUTER_PROVISIONING_KEY environment variable is not set!")

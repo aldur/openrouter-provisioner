@@ -62,6 +62,11 @@
               wantedBy = [ "multi-user.target" ];
               after = [ "network.target" ];
 
+              environment = {
+                HOST = cfg.host;
+                PORT = toString cfg.port;
+              };
+
               serviceConfig = {
                 Type = "simple";
                 DynamicUser = true;
