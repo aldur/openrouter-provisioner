@@ -45,11 +45,15 @@ class KeyProvisionerHandler(BaseHTTPRequestHandler):
                 return
 
         # Optional parameters
-        key_name = body.get("name", f"temp-key-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S')}")
+        key_name = body.get(
+            "name", f"temp-key-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S')}"
+        )
         credit_limit = body.get("limit")  # Optional credit limit in dollars
 
         # Calculate expiration time (24 hours from now)
-        expires_at = (datetime.now(timezone.utc) + timedelta(hours=24)).strftime('%Y-%m-%dT%H:%M:%SZ')
+        expires_at = (datetime.now(timezone.utc) + timedelta(hours=24)).strftime(
+            "%Y-%m-%dT%H:%M:%SZ"
+        )
 
         # Build request to OpenRouter Provisioning API
         openrouter_payload = {
@@ -78,13 +82,16 @@ class KeyProvisionerHandler(BaseHTTPRequestHandler):
             # Extract the API key from the response
             api_key = result.get("key") or result.get("data", {}).get("key")
 
-            self._send_json_response(200, {
-                "success": True,
-                "api_key": api_key,
-                "name": key_name,
-                "expires_at": expires_at,
-                "full_response": result,
-            })
+            self._send_json_response(
+                200,
+                {
+                    "success": True,
+                    "api_key": api_key,
+                    "name": key_name,
+                    "expires_at": expires_at,
+                    "full_response": result,
+                },
+            )
 
         except urllib.error.HTTPError as e:
             error_body = e.read().decode("utf-8")
@@ -93,23 +100,32 @@ class KeyProvisionerHandler(BaseHTTPRequestHandler):
             except json.JSONDecodeError:
                 error_json = {"raw": error_body}
 
-            self._send_json_response(e.code, {
-                "success": False,
-                "error": f"OpenRouter API error: {e.code}",
-                "details": error_json,
-            })
+            self._send_json_response(
+                e.code,
+                {
+                    "success": False,
+                    "error": f"OpenRouter API error: {e.code}",
+                    "details": error_json,
+                },
+            )
 
         except urllib.error.URLError as e:
-            self._send_json_response(502, {
-                "success": False,
-                "error": f"Failed to connect to OpenRouter: {str(e.reason)}",
-            })
+            self._send_json_response(
+                502,
+                {
+                    "success": False,
+                    "error": f"Failed to connect to OpenRouter: {str(e.reason)}",
+                },
+            )
 
         except Exception as e:
-            self._send_json_response(500, {
-                "success": False,
-                "error": f"Internal error: {str(e)}",
-            })
+            self._send_json_response(
+                500,
+                {
+                    "success": False,
+                    "error": f"Internal error: {str(e)}",
+                },
+            )
 
 
 def main():
