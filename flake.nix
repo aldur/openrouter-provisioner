@@ -15,8 +15,10 @@
             let
               pkgs = nixpkgs.legacyPackages.${system};
               server = pkgs.writers.writePython3Bin "openrouter-provisioner" {
-                libraries = [ ];
-              } builtins.readFile ./openrouter.py;
+                flakeIgnore = [
+                  "E501" # line too long
+                ];
+              } (builtins.readFile ./openrouter.py);
             in
             {
               inherit server;
