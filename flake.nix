@@ -74,7 +74,7 @@
                 ExecStart = "${pkgs.writeShellScript "openrouter-start" ''
                   OPENROUTER_PROVISIONING_KEY=$(cat $CREDENTIALS_DIRECTORY/key)
                   export OPENROUTER_PROVISIONING_KEY
-                  exec ${self.packages.${pkgs.system}.server}/bin/openrouter-provisioner
+                  exec ${self.packages.${pkgs.stdenv.hostPlatform.system}.server}/bin/openrouter-provisioner
                 ''}";
                 Restart = "on-failure";
               };
